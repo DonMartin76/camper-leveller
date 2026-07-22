@@ -82,8 +82,9 @@ function App() {
               <div className="camper-symbol" aria-hidden="true"><div className="front-arrow">Front</div><div className="windscreen" /><div className="cab" /><div className="living-area" /><div className="phone-guide">TOP</div></div>
               <button className={`measurement-button ${isPaused ? 'paused' : ''}`} type="button" onClick={toggleMeasurement}>{isPaused ? <Play size={25} fill="currentColor" /> : motion.status === 'active' ? <Pause size={25} fill="currentColor" /> : <Signal size={25} />}<span>{controlText}</span></button>
             </div>
+            <p className="vehicle-summary">{state.presetId === 'custom' ? 'Custom' : `Fiat Ducato ${state.presetId}`} | {state.vehicle.wheelbaseMm} mm wheelbase | {state.vehicle.widthMm} mm width | {state.maximumLiftCm} cm ramp limit</p>
+            {plan?.exceedsMaximum && <div className="warning" role="alert"><TriangleAlert size={20} /><span>One or more lifts exceed your {state.maximumLiftCm} cm ramp limit.</span></div>}
           </section>
-          <aside className="guidance-panel"><p className="eyebrow">Vehicle</p><strong>{state.presetId === 'custom' ? 'Custom dimensions' : `Fiat Ducato ${state.presetId}`}</strong><dl><div><dt>Wheelbase</dt><dd>{state.vehicle.wheelbaseMm} mm</dd></div><div><dt>Width</dt><dd>{state.vehicle.widthMm} mm</dd></div><div><dt>Ramp limit</dt><dd>{state.maximumLiftCm} cm</dd></div></dl>{plan?.exceedsMaximum && <div className="warning" role="alert"><TriangleAlert size={20} /><span>One or more lifts exceed your {state.maximumLiftCm} cm ramp limit.</span></div>}</aside>
         </section>
         {motion.status === 'denied' && <p className="sensor-message" role="alert">Motion access is off. Allow Motion & Orientation Access in Safari, then try again.</p>}
         {motion.status === 'unsupported' && <p className="sensor-message" role="alert">This browser does not provide the motion data needed for a live measurement.</p>}
