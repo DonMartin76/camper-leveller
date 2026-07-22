@@ -1,0 +1,45 @@
+.app-shell { min-height: 100svh; padding: 22px clamp(20px, 4vw, 56px) 28px; }
+.topbar, .workspace, .settings-header, .status-line, .warning, .mode-control, .angles, .guidance-panel dl div { align-items: center; display: flex; }
+.topbar { justify-content: space-between; margin: 0 auto 16px; max-width: 1360px; }
+.eyebrow { color: var(--copper); font-size: .72rem; font-weight: 750; letter-spacing: .1em; margin: 0 0 3px; text-transform: uppercase; }
+h1, h2 { color: var(--ink); font-family: var(--heading); font-weight: 700; letter-spacing: 0; margin: 0; }
+h1 { font-size: 1.7rem; } h2 { font-size: 1.35rem; }
+.icon-button { align-items: center; background: transparent; border: 1px solid var(--line); color: var(--ink); cursor: pointer; display: inline-flex; height: 42px; justify-content: center; width: 42px; }
+.icon-button:hover, .icon-button:focus-visible { background: var(--paper-deep); }
+.workspace { background: rgba(255,255,255,.55); border: 1px solid var(--line); box-shadow: 0 14px 35px rgba(42,54,41,.08); gap: clamp(18px,3vw,44px); justify-content: space-between; margin: 0 auto; max-width: 1360px; min-height: min(72svh,560px); padding: clamp(20px,3vw,40px); }
+.measurement-panel, .guidance-panel { flex: 0 0 min(210px,20vw); }
+.measurement-panel { align-self: stretch; display: flex; flex-direction: column; gap: 20px; justify-content: center; }
+.status-line { color: var(--moss); font-size: .86rem; font-weight: 700; gap: 8px; }
+.angles { border-block: 1px solid var(--line); gap: 22px; padding: 16px 0; }
+.angles div { display: grid; gap: 4px; }
+.angles span, .wheel-value span, dt { color: var(--muted); font-size: .73rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.angles strong { color: var(--ink); font-family: var(--heading); font-size: 1.22rem; }
+.mode-control { background: var(--paper-deep); padding: 3px; }
+.mode-control button { background: transparent; border: 0; color: var(--muted); cursor: pointer; flex: 1; font: inherit; font-size: .82rem; padding: 9px 6px; }
+.mode-control button.active { background: var(--ink); color: #fff; }
+.residual { color: var(--muted); font-size: .8rem; line-height: 1.45; margin: 0; }
+.vehicle-stage { align-items: center; display: flex; flex: 1; flex-direction: column; justify-content: center; min-width: 430px; }
+.orientation-label { color: var(--muted); font-size: .78rem; font-weight: 700; letter-spacing: .05em; margin: 0 0 10px; text-transform: uppercase; }
+.vehicle-layout { aspect-ratio: 1.25; max-height: 410px; max-width: 520px; position: relative; width: min(100%,520px); }
+.camper-symbol { background: var(--sage); border: 3px solid var(--ink); inset: 13% 29%; position: absolute; transform: rotate(90deg); }
+.front-arrow { color: var(--ink); font-size: .7rem; font-weight: 800; left: 50%; letter-spacing: .08em; position: absolute; top: -33px; transform: translateX(-50%); text-transform: uppercase; }
+.front-arrow::before { border-inline: 8px solid transparent; border-bottom: 12px solid var(--ink); content: ''; left: 50%; position: absolute; top: 14px; transform: translateX(-50%); }
+.windscreen { background: #c5d7d6; border: 3px solid var(--ink); height: 20%; left: 14%; position: absolute; right: 14%; top: 8%; }
+.cab { border-bottom: 3px solid var(--ink); height: 37%; left: 0; position: absolute; right: 0; top: 31%; }
+.living-area { border: 2px solid rgba(41,69,59,.45); bottom: 10%; left: 15%; position: absolute; right: 15%; top: 52%; }
+.phone-guide { align-items: center; background: var(--paper); border: 2px solid var(--ink); color: var(--ink); display: flex; font-size: .65rem; font-weight: 800; height: 45px; justify-content: center; left: 50%; letter-spacing: .08em; position: absolute; top: 57%; transform: translateX(-50%); width: 72px; }
+.wheel-value { align-items: center; display: grid; gap: 3px; position: absolute; text-align: center; z-index: 1; }
+.wheel-value strong { color: var(--ink); font-family: var(--heading); font-size: clamp(1.1rem,2.3vw,1.7rem); }
+.wheel-value.active strong { color: var(--moss); }
+.frontLeft { right: 3%; top: 15%; } .frontRight { bottom: 15%; right: 3%; } .rearLeft { left: 3%; top: 15%; } .rearRight { bottom: 15%; left: 3%; }
+.measurement-button { align-items: center; background: var(--copper); border: 3px solid var(--ink); bottom: 23%; color: #fff; cursor: pointer; display: flex; flex-direction: column; font: inherit; font-size: .75rem; font-weight: 800; gap: 5px; justify-content: center; left: 50%; letter-spacing: .02em; min-height: 75px; padding: 10px; position: absolute; transform: translateX(-50%); width: 116px; z-index: 2; }
+.measurement-button:hover, .measurement-button:focus-visible { background: #a24624; } .measurement-button.paused { background: var(--moss); }
+.guidance-panel { border-left: 1px solid var(--line); display: grid; gap: 8px; padding-left: clamp(18px,2vw,34px); }
+.guidance-panel > strong { color: var(--ink); font-family: var(--heading); font-size: 1.08rem; }
+.guidance-panel dl { display: grid; gap: 8px; margin: 12px 0 0; }.guidance-panel dl div { gap: 12px; justify-content: space-between; } dd { color: var(--ink); font-weight: 700; margin: 0; }
+.warning { background: #fff0d3; border-left: 3px solid var(--copper); color: #743313; font-size: .8rem; gap: 8px; line-height: 1.35; margin-top: 14px; padding: 10px; }
+.sensor-message { color: #743313; font-size: .85rem; margin: 14px auto 0; max-width: 1360px; }
+.settings-scrim { align-items: stretch; background: rgba(26,35,29,.28); display: flex; inset: 0; justify-content: flex-end; position: fixed; z-index: 10; }
+.settings-panel { background: var(--paper); box-shadow: -12px 0 34px rgba(24,38,30,.2); display: grid; gap: 20px; max-width: 430px; overflow: auto; padding: 26px; width: min(86vw,430px); }.settings-header { justify-content: space-between; }.settings-panel label { color: var(--ink); display: grid; font-size: .84rem; font-weight: 700; gap: 7px; }.settings-panel input,.settings-panel select { background: #fff; border: 1px solid var(--line); border-radius: 0; color: var(--ink); font: inherit; padding: 10px; }
+.portrait-notice { display: none; }
+@media (max-width: 760px), (orientation: portrait) { .landscape-app { display: none; }.portrait-notice { align-items: center; color: var(--ink); display: flex; font-family: var(--heading); font-size: 1.2rem; justify-content: center; min-height: 100svh; padding: 30px; text-align: center; } }
