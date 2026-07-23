@@ -91,7 +91,13 @@ function App() {
 
   return (
     <main className="app-shell">
-      <div className="portrait-notice" role="status">Rotate your phone to landscape to measure.</div>
+      <div className="portrait-notice" role="status">
+        <div>
+          <p className="portrait-app-name">Camper Leveller</p>
+          <p className="portrait-message">Rotate your phone to landscape to measure.</p>
+          <p className="portrait-copyright">(c) 2026 Martin Danielsson</p>
+        </div>
+      </div>
       <div className="landscape-app">
         <button className="icon-button settings-button" type="button" onClick={() => setSettingsOpen(true)} aria-label="Open settings" title="Settings"><Settings size={22} /></button>
         <section className="workspace" aria-label="Live leveling guidance">
