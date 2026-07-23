@@ -25,14 +25,14 @@ function labelFor(status: MotionStatus) {
 }
 
 // The calibrated landscape hold is "phone top at screen right" (screen.orientation
-// angle 90). The opposite landscape (top at screen left) is a 180 degree in-plane
-// flip that negates both tilt axes, so we detect it and flip to keep the numbers
-// correct whichever way the phone is rotated.
+// angle 270 / -90 on this device). The opposite landscape (top at screen left) is a
+// 180 degree in-plane flip that negates both tilt axes, so we detect it and flip to
+// keep the numbers correct whichever way the phone is rotated.
 function landscapeFlip(): number {
   const angle = typeof screen !== 'undefined' && screen.orientation && typeof screen.orientation.angle === 'number'
     ? screen.orientation.angle
     : (window as unknown as { orientation?: number }).orientation ?? 90
-  return angle === 270 || angle === -90 ? -1 : 1
+  return angle === 90 ? -1 : 1
 }
 
 export function useMotionSensor(): MotionSensor {
