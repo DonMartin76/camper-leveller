@@ -9,6 +9,7 @@
     "lint": "oxlint",
     "test": "vitest run",
     "test:watch": "vitest",
+    "screenshots": "node scripts/capture-screenshots.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

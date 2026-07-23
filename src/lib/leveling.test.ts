@@ -49,6 +49,25 @@ describe('createLevelingPlan', () => {
     expect(Math.hypot(plan.residual.pitchDegrees, plan.residual.rollDegrees)).toBeGreaterThan(0)
   })
 
+  it('never picks a diagonal pair in two-wheel mode', () => {
+    const diagonals = [
+      ['frontLeft', 'rearRight'],
+      ['frontRight', 'rearLeft'],
+    ]
+    const cases = [
+      { pitchDegrees: 3.3, rollDegrees: -4.3 },
+      { pitchDegrees: -2.5, rollDegrees: 3 },
+      { pitchDegrees: 1, rollDegrees: 5 },
+    ]
+
+    for (const measurement of cases) {
+      const plan = createLevelingPlan(measurement, ducatoL3, 'two', 15)
+      const selected = [...plan.selectedWheels].sort()
+      const isDiagonal = diagonals.some((pair) => [...pair].sort().join() === selected.join())
+      expect(isDiagonal).toBe(false)
+    }
+  })
+
   it('warns when a recommendation exceeds the maximum lift', () => {
     const plan = createLevelingPlan({ pitchDegrees: 4, rollDegrees: 0 }, ducatoL3, 'three', 5)
 

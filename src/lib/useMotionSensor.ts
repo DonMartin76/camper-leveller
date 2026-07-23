@@ -36,7 +36,8 @@ export function useMotionSensor(): MotionSensor {
     function onOrientation(event: DeviceOrientationEvent) {
       if (event.beta === null || event.gamma === null) return
       // The phone's physical top, at screen right in the supported landscape hold, maps to vehicle front.
-      setMeasurement({ pitchDegrees: event.beta, rollDegrees: event.gamma })
+      // Roll is inverted so a physically raised left side reads as the high side (verified on-device).
+      setMeasurement({ pitchDegrees: event.beta, rollDegrees: -event.gamma })
     }
 
     window.addEventListener('deviceorientation', onOrientation, true)

@@ -94,17 +94,6 @@ function residualAfterLifts(
   }
 }
 
-function combinations(items: Wheel[], size: number): Wheel[][] {
-  if (size === 0) return [[]]
-  if (items.length < size) return []
-
-  const [first, ...rest] = items
-  return [
-    ...combinations(rest, size - 1).map((combination) => [first, ...combination]),
-    ...combinations(rest, size),
-  ]
-}
-
 function comparePlans(first: LevelingPlan, second: LevelingPlan) {
   const firstError = Math.hypot(first.residual.pitchDegrees, first.residual.rollDegrees)
   const secondError = Math.hypot(second.residual.pitchDegrees, second.residual.rollDegrees)
@@ -143,7 +132,14 @@ export function createLevelingPlan(
     }
   }
 
-  const candidates = combinations(wheels, 2).map((selectedWheels) => {
+  const twoWheelPairs: Wheel[][] = [
+    ['frontLeft', 'frontRight'], // front axle
+    ['rearLeft', 'rearRight'], // rear axle
+    ['frontLeft', 'rearLeft'], // left side
+    ['frontRight', 'rearRight'], // right side
+  ]
+
+  const candidates = twoWheelPairs.map((selectedWheels) => {
     const liftsCm = emptyLifts()
     for (const wheel of selectedWheels) liftsCm[wheel] = idealLifts[wheel]
 
