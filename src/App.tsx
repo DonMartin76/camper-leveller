@@ -99,7 +99,7 @@ function App() {
         </div>
       </div>
       <div className="landscape-app">
-        <button className="icon-button settings-button" type="button" onClick={() => setSettingsOpen(true)} aria-label="Open settings" title="Settings"><Settings size={22} /></button>
+        {!settingsOpen && <button className="icon-button settings-button" type="button" onClick={() => setSettingsOpen(true)} aria-label="Open settings" title="Settings"><Settings size={22} /></button>}
         <section className="workspace" aria-label="Live leveling guidance">
           <aside className="measurement-panel">
             <div className="status-line">{motion.status === 'active' ? <Signal size={18} /> : <SignalZero size={18} />}<span>{isPaused ? 'Paused reading' : motion.label}</span></div>
