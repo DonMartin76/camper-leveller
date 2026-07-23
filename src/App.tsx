@@ -96,6 +96,7 @@ function App() {
           <p className="portrait-app-name">Camper Leveller</p>
           <p className="portrait-message">Rotate your phone to landscape to measure.</p>
           <p className="portrait-copyright">(c) 2026 Martin Danielsson</p>
+          <p className="portrait-build">build {__BUILD_SHA__} &middot; {__BUILD_DATE__}</p>
         </div>
       </div>
       <div className="landscape-app">
