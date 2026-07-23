@@ -12,7 +12,7 @@ Capture the agreed product decisions before technical design and implementation.
 - The application is fixed to landscape orientation and shows a symbolic camper in the required placement direction.
 - Built-in orientation/level sensing produces live pitch and roll measurements. A central Pause/Resume control freezes and resumes both readings and recommendations.
 - Recommendations use whole centimetres and appear next to their corresponding wheel locations.
-- Vehicle geometry consists of wheelbase and body width. Presets cover Fiat Ducato panel-van configurations `L2`, `L3`, and `L4`, with a Custom configuration for manual dimensions.
+- Vehicle geometry consists of wheelbase, body width, and an estimated track width. The MVP derives track width as 88% of body width for roll calculations. Presets cover a bundled European campervan chassis catalog with separately named models, including shared-platform Stellantis models, plus a Custom configuration for manual dimensions.
 - Two-wheel mode is the default. It recommends the two wheels that best reduce the remaining pitch and roll, reports the residual tilt, and cannot generally provide exact two-axis level.
 - Three-wheel mode selects a practical three-wheel plan intended to level both axes.
 - A configurable maximum ramp height produces a warning for plans that exceed it.

@@ -15,7 +15,7 @@ The MVP is a progressive web application (PWA), initially used through Safari on
 - A vehicle symbol that shows the required phone direction: in the supported landscape hold, the phone's physical top is at the screen's right edge and points to the front of the camper.
 - Per-wheel lift recommendations for physical leveling ramps.
 - Two-wheel and three-wheel recommendation modes.
-- Fiat Ducato panel-van presets and a Custom vehicle configuration.
+- A bundled European campervan chassis catalog and a Custom vehicle configuration.
 - Local maximum-ramp-height setting and warnings.
 - Pause and Resume of a live measurement and its results.
 - PWA installation or offline caching for use without a network connection after an initial successful load.
@@ -24,7 +24,7 @@ The MVP is a progressive web application (PWA), initially used through Safari on
 
 - Direct control of leveling ramps, hydraulic jacks, airbags, or any vehicle system.
 - Detection that the vehicle has been driven onto a ramp, tire contact, wheel chocking, parking-brake state, or vehicle stability.
-- Accounts, cloud synchronization, telemetry, maps, campsite information, or a vehicle catalogue beyond the named presets.
+- Accounts, cloud synchronization, telemetry, maps, or campsite information.
 - A guarantee that calculated lift values will level, stabilize, or safely support a vehicle.
 
 ## 3. Definitions
@@ -38,7 +38,8 @@ The MVP is a progressive web application (PWA), initially used through Safari on
 | Lift | The vertical height, in cm, by which a wheel should be raised using a ramp. |
 | Residual tilt | The pitch and roll remaining after applying a two-wheel recommendation. |
 | Wheelbase | Distance between the front and rear wheel axle centres. |
-| Body width | Distance between the left and right wheel positions used by the model; configured as vehicle body width excluding mirrors for the supplied presets. |
+| Body width | Exterior width excluding mirrors, used as the configured vehicle-width input. |
+| Track width | Distance between the left and right wheel positions. It is used for roll geometry and estimated in the MVP as 88% of configured body width. |
 
 ## 4. User and Operating Conditions
 
@@ -76,20 +77,14 @@ The app shall not imply that the calculation replaces safety checks or manufactu
 ### 5.3 Vehicle Configuration
 
 - FR-14: The application shall provide a settings area for vehicle configuration.
-- FR-15: The settings area shall offer the following provisional Fiat Ducato panel-van presets:
+- FR-15: The settings area shall offer the bundled European campervan chassis catalog in manufacturer groups, with each supplied manufacturer, model, variant, year range, wheelbase, and body width preserved as a separately selectable entry. Equivalent shared-platform models shall remain separately listed under their named brands.
 
-| Display name | Chassis-length mapping | Wheelbase | Body width excluding mirrors |
-| --- | --- | ---: | ---: |
-| L2 | Approximately 5,413 mm overall length | 3,450 mm | 2,050 mm |
-| L3 | Approximately 5,998 mm overall length | 4,035 mm | 2,050 mm |
-| L4 | Approximately 6,363 mm overall length | 4,035 mm | 2,050 mm |
-
-- FR-16: The application shall provide a Custom option that lets the user enter wheelbase and body width in millimetres.
+- FR-16: The application shall provide a Custom option that lets the user enter wheelbase and body width in millimetres. The app shall estimate track width as 88% of entered body width.
 - FR-17: Custom wheelbase shall be accepted only from 2,000 mm through 6,000 mm, inclusive. Custom body width shall be accepted only from 1,500 mm through 3,000 mm, inclusive.
 - FR-18: The settings area shall identify body width as excluding mirrors.
 - FR-19: The application shall retain the last valid vehicle configuration and maximum ramp height locally on the device.
 
-The preset dimensions are provisional. Before release, their values must be verified against an official 2026 Fiat Professional specification for the intended market, then this table must cite that source.
+The chassis-catalog dimensions are provisional and originated as project input. Before release, their values must be verified against official manufacturer specifications for the intended market and model year. The five supplied values marked `3275*` are stored as the numeric 3,275 mm required by the calculation; the asterisk's original meaning must be verified before release.
 
 ### 5.4 Ramp Plan Modes
 
@@ -125,16 +120,16 @@ Exact simultaneous correction of pitch and roll is not generally possible by rai
 | --- | --- |
 | Vehicle is level | All wheel lifts are 0 cm; pitch and roll are shown as level within the defined sensing tolerance. |
 | Pitch-only slope | A plan uses vehicle wheelbase to recommend positive lifts for the lower end, subject to selected mode and rounding. |
-| Roll-only slope | A plan uses vehicle body width to recommend positive lifts for the lower side, subject to selected mode and rounding. |
+| Roll-only slope | A plan uses estimated vehicle track width to recommend positive lifts for the lower side, subject to selected mode and rounding. |
 | Combined pitch and roll | Three-wheel mode targets an all-axis level result; Two wheels mode chooses its best pair and shows remaining pitch and roll. |
 | User changes mode | The new plan, selected wheels, values, and two-wheel residual status update from the same current reading. |
 | User presses Pause | Measured angles, selected wheels, lift values, warnings, and residual display remain unchanged until Resume. |
 | Sensor data is unavailable or unstable | No live plan is represented as valid; the user receives clear placement/stability guidance. |
 | A lift exceeds configured maximum | The lift remains displayed with a conspicuous maximum-ramp-height warning. |
 | Custom dimensions are invalid | The application rejects them and explains the accepted units and bounds. |
-| A Fiat preset is selected | Its stored wheelbase and width populate the active vehicle configuration. |
+| A chassis catalog entry is selected | Its stored wheelbase and width populate the active vehicle configuration. |
 | Device is offline after an initial successful online load | The application launches and supports configuration, live measurement, pause/resume, and lift calculation without a network request. |
 
 ## 8. Open Release Gate
 
-The named vehicle-preset dimensions and the width basis used in calculation must be reconciled with the official 2026 Fiat Professional documentation for the intended market before release.
+The chassis catalog's dimensions, actual track widths, and the 88%-of-body-width track heuristic must be reconciled with official manufacturer documentation for the intended market and model year before release.

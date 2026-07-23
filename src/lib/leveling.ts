@@ -12,6 +12,8 @@ export type VehicleGeometry = {
   widthMm: number
 }
 
+export const TRACK_WIDTH_RATIO = 0.88
+
 export type LevelingMode = 'two' | 'three'
 
 export type LevelingPlan = {
@@ -33,6 +35,10 @@ function radiansToDegrees(radians: number) {
   return (radians * 180) / Math.PI
 }
 
+export function estimateTrackWidthMm(widthMm: number) {
+  return widthMm * TRACK_WIDTH_RATIO
+}
+
 function roundCentimetres(valueMm: number) {
   return Math.max(0, Math.round(valueMm / 10))
 }
@@ -48,7 +54,7 @@ function emptyLifts(): WheelLifts {
 
 function wheelHeights(measurement: Measurement, vehicle: VehicleGeometry) {
   const frontHeight = Math.tan(degreesToRadians(measurement.pitchDegrees)) * (vehicle.wheelbaseMm / 2)
-  const rightHeight = Math.tan(degreesToRadians(measurement.rollDegrees)) * (vehicle.widthMm / 2)
+  const rightHeight = Math.tan(degreesToRadians(measurement.rollDegrees)) * (estimateTrackWidthMm(vehicle.widthMm) / 2)
 
   return {
     frontLeft: frontHeight - rightHeight,
@@ -84,7 +90,7 @@ function residualAfterLifts(
 
   return {
     pitchDegrees: radiansToDegrees(Math.atan((frontAverage - rearAverage) / vehicle.wheelbaseMm)),
-    rollDegrees: radiansToDegrees(Math.atan((rightAverage - leftAverage) / vehicle.widthMm)),
+    rollDegrees: radiansToDegrees(Math.atan((rightAverage - leftAverage) / estimateTrackWidthMm(vehicle.widthMm))),
   }
 }
 

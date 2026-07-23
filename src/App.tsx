@@ -1,10 +1,11 @@
 import { Pause, Play, Settings, Signal, SignalZero, TriangleAlert, X } from 'lucide-react'
 import { useEffect, useReducer, useState } from 'react'
 import './App.css'
-import { createLevelingPlan, type LevelingMode, type Measurement, type VehicleGeometry, type Wheel } from './lib/leveling'
+import { defaultVehiclePreset, vehiclePresetLabel, vehiclePresets, type VehiclePreset } from './data/vehiclePresets'
+import { createLevelingPlan, estimateTrackWidthMm, type LevelingMode, type Measurement, type VehicleGeometry, type Wheel } from './lib/leveling'
 import { useMotionSensor } from './lib/useMotionSensor'
 
-type PresetId = 'L2' | 'L3' | 'L4' | 'custom'
+type PresetId = string | 'custom'
 type AppState = { presetId: PresetId; vehicle: VehicleGeometry; mode: LevelingMode; maximumLiftCm: number }
 type Action =
   | { type: 'preset'; value: PresetId }
@@ -12,26 +13,34 @@ type Action =
   | { type: 'mode'; value: LevelingMode }
   | { type: 'maximum'; value: number }
 
-const presets: Record<Exclude<PresetId, 'custom'>, VehicleGeometry> = {
-  L2: { wheelbaseMm: 3450, widthMm: 2050 },
-  L3: { wheelbaseMm: 4035, widthMm: 2050 },
-  L4: { wheelbaseMm: 4035, widthMm: 2050 },
-}
-const defaultState: AppState = { presetId: 'L3', vehicle: presets.L3, mode: 'two', maximumLiftCm: 15 }
+const defaultState: AppState = { presetId: defaultVehiclePreset.id, vehicle: defaultVehiclePreset, mode: 'two', maximumLiftCm: 15 }
 const wheels: Wheel[] = ['frontLeft', 'frontRight', 'rearLeft', 'rearRight']
 const wheelLabels: Record<Wheel, string> = { frontLeft: 'Front left', frontRight: 'Front right', rearLeft: 'Rear left', rearRight: 'Rear right' }
+const legacyPresetIds: Record<string, string> = { L2: 'fiat-ducato-l2', L3: 'fiat-ducato-l3', L4: 'fiat-ducato-l4' }
+const presetsByManufacturer = vehiclePresets.reduce<Record<string, VehiclePreset[]>>((groups, preset) => {
+  groups[preset.manufacturer] ??= []
+  groups[preset.manufacturer].push(preset)
+  return groups
+}, {})
 
 function loadState(): AppState {
   try {
     const stored = window.localStorage.getItem('camper-leveller.settings')
     if (!stored) return defaultState
     const parsed = JSON.parse(stored) as AppState
-    return parsed.vehicle && ['L2', 'L3', 'L4', 'custom'].includes(parsed.presetId) ? parsed : defaultState
+    const presetId = legacyPresetIds[parsed.presetId] ?? parsed.presetId
+    if (presetId === 'custom' && parsed.vehicle) return { ...parsed, presetId }
+    const preset = vehiclePresets.find((candidate) => candidate.id === presetId)
+    return preset ? { ...parsed, presetId: preset.id, vehicle: preset } : defaultState
   } catch { return defaultState }
 }
 
 function reducer(state: AppState, action: Action): AppState {
-  if (action.type === 'preset') return action.value === 'custom' ? { ...state, presetId: 'custom' } : { ...state, presetId: action.value, vehicle: presets[action.value] }
+  if (action.type === 'preset') {
+    if (action.value === 'custom') return { ...state, presetId: 'custom' }
+    const preset = vehiclePresets.find((candidate) => candidate.id === action.value)
+    return preset ? { ...state, presetId: preset.id, vehicle: preset } : state
+  }
   if (action.type === 'vehicle') return { ...state, presetId: 'custom', vehicle: { ...state.vehicle, [action.field]: action.value } }
   if (action.type === 'mode') return { ...state, mode: action.value }
   return { ...state, maximumLiftCm: action.value }
@@ -82,14 +91,14 @@ function App() {
               <div className="camper-symbol" aria-hidden="true"><div className="front-arrow">Front</div><div className="windscreen" /><div className="cab" /><div className="living-area" /><div className="phone-guide">TOP</div></div>
               <button className={`measurement-button ${isPaused ? 'paused' : ''}`} type="button" onClick={toggleMeasurement}>{isPaused ? <Play size={25} fill="currentColor" /> : motion.status === 'active' ? <Pause size={25} fill="currentColor" /> : <Signal size={25} />}<span>{controlText}</span></button>
             </div>
-            <p className="vehicle-summary">{state.presetId === 'custom' ? 'Custom' : `Fiat Ducato ${state.presetId}`} | {state.vehicle.wheelbaseMm} mm wheelbase | {state.vehicle.widthMm} mm width | {state.maximumLiftCm} cm ramp limit</p>
+            <p className="vehicle-summary">{state.presetId === 'custom' ? 'Custom' : vehiclePresetLabel(vehiclePresets.find((preset) => preset.id === state.presetId)!)} | {state.vehicle.wheelbaseMm} mm wheelbase | {state.vehicle.widthMm} mm body width | {Math.round(estimateTrackWidthMm(state.vehicle.widthMm))} mm estimated track | {state.maximumLiftCm} cm ramp limit</p>
             {plan?.exceedsMaximum && <div className="warning" role="alert"><TriangleAlert size={20} /><span>One or more lifts exceed your {state.maximumLiftCm} cm ramp limit.</span></div>}
           </section>
         </section>
         {motion.status === 'denied' && <p className="sensor-message" role="alert">Motion access is off. Allow Motion & Orientation Access in Safari, then try again.</p>}
         {motion.status === 'unsupported' && <p className="sensor-message" role="alert">This browser does not provide the motion data needed for a live measurement.</p>}
       </div>
-      {settingsOpen && <div className="settings-scrim" onClick={() => setSettingsOpen(false)}><aside className="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title" onClick={(event) => event.stopPropagation()}><div className="settings-header"><div><p className="eyebrow">Configuration</p><h2 id="settings-title">Vehicle settings</h2></div><button className="icon-button" type="button" onClick={() => setSettingsOpen(false)} aria-label="Close settings" title="Close settings"><X size={22} /></button></div><label>Vehicle preset<select value={state.presetId} onChange={(event) => dispatch({ type: 'preset', value: event.target.value as PresetId })}><option value="L2">Fiat Ducato L2</option><option value="L3">Fiat Ducato L3</option><option value="L4">Fiat Ducato L4</option><option value="custom">Custom</option></select></label><label>Wheelbase (mm)<input type="number" min="2000" max="6000" value={state.vehicle.wheelbaseMm} onChange={(event) => dispatch({ type: 'vehicle', field: 'wheelbaseMm', value: Number(event.target.value) })} /></label><label>Body width, excluding mirrors (mm)<input type="number" min="1500" max="3000" value={state.vehicle.widthMm} onChange={(event) => dispatch({ type: 'vehicle', field: 'widthMm', value: Number(event.target.value) })} /></label><label>Maximum ramp height (cm)<input type="number" min="1" max="100" value={state.maximumLiftCm} onChange={(event) => dispatch({ type: 'maximum', value: Number(event.target.value) })} /></label></aside></div>}
+      {settingsOpen && <div className="settings-scrim" onClick={() => setSettingsOpen(false)}><aside className="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title" onClick={(event) => event.stopPropagation()}><div className="settings-header"><div><p className="eyebrow">Configuration</p><h2 id="settings-title">Vehicle settings</h2></div><button className="icon-button" type="button" onClick={() => setSettingsOpen(false)} aria-label="Close settings" title="Close settings"><X size={22} /></button></div><label>Vehicle preset<select value={state.presetId} onChange={(event) => dispatch({ type: 'preset', value: event.target.value as PresetId })}>{Object.entries(presetsByManufacturer).map(([manufacturer, presets]) => <optgroup key={manufacturer} label={manufacturer}>{presets.map((preset) => <option key={preset.id} value={preset.id}>{vehiclePresetLabel(preset)}</option>)}</optgroup>)}<option value="custom">Custom dimensions</option></select></label><label>Wheelbase (mm)<input type="number" min="2000" max="6000" value={state.vehicle.wheelbaseMm} onChange={(event) => dispatch({ type: 'vehicle', field: 'wheelbaseMm', value: Number(event.target.value) })} /></label><label>Body width, excluding mirrors (mm)<input type="number" min="1500" max="3000" value={state.vehicle.widthMm} onChange={(event) => dispatch({ type: 'vehicle', field: 'widthMm', value: Number(event.target.value) })} /></label><p className="settings-note">Estimated track width: {Math.round(estimateTrackWidthMm(state.vehicle.widthMm))} mm (88% of body width).</p><label>Maximum ramp height (cm)<input type="number" min="1" max="100" value={state.maximumLiftCm} onChange={(event) => dispatch({ type: 'maximum', value: Number(event.target.value) })} /></label></aside></div>}
     </main>
   )
 }

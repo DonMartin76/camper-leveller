@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createLevelingPlan } from './leveling'
+import { createLevelingPlan, estimateTrackWidthMm } from './leveling'
 
 const ducatoL3 = { wheelbaseMm: 4035, widthMm: 2050 }
 
@@ -32,6 +32,14 @@ describe('createLevelingPlan', () => {
     expect(plan.liftsCm.rearLeft).toBeGreaterThan(0)
     expect(plan.liftsCm.frontRight).toBe(0)
     expect(plan.liftsCm.rearRight).toBe(0)
+  })
+
+  it('uses 88 percent of body width as the estimated track width for roll calculations', () => {
+    const plan = createLevelingPlan({ pitchDegrees: 0, rollDegrees: 2 }, ducatoL3, 'three', 15)
+
+    expect(estimateTrackWidthMm(ducatoL3.widthMm)).toBe(1804)
+    expect(plan.liftsCm.frontLeft).toBe(6)
+    expect(plan.liftsCm.rearLeft).toBe(6)
   })
 
   it('returns two selected candidate positions and residual tilt in two-wheel mode', () => {

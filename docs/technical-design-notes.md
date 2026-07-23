@@ -53,7 +53,7 @@ Phone position along the vehicle's floor does not alter the ideal rigid-body pla
 The calculation represents the camper as four wheel locations forming a rectangle:
 
 - Front/rear separation is wheelbase.
-- Left/right separation is configured body width.
+- Left/right separation is track width. For the MVP, track width is estimated as 88% of configured body width; exact per-model track widths are deferred until verified source data is available.
 - Current attitude is defined by vehicle-relative pitch and roll.
 - A recommendation gives non-negative vertical lifts at the wheel locations.
 
@@ -95,7 +95,7 @@ The application needs local storage for:
 
 No account, synchronization, telemetry, or network service is required for the MVP. A service worker shall cache the application shell, vehicle presets, calculation logic, instructional graphics, and user-interface assets after the initial online load. A later implementation must not make a runtime network request on the measurement or calculation path, and must define a clear fallback if the first offline visit occurs before the app is cached.
 
-Vehicle presets must be data-driven rather than embedded only in layout or calculation logic, so the verified 2026 Fiat dimensions can be updated independently. The release implementation must record an official source for the final preset values and intended market.
+Vehicle presets must be data-driven rather than embedded only in layout or calculation logic. The bundled European chassis catalog preserves separately selectable named models even when they share a vehicle platform. The release implementation must record official sources for final values, intended markets, and model years. The five values supplied as `3275*` are currently represented as numeric 3,275 mm and require source clarification before release.
 
 ## 7. Validation Strategy
 
