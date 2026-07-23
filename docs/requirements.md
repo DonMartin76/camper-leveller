@@ -19,6 +19,7 @@ The MVP is a progressive web application (PWA), initially used through Safari on
 - Local maximum-ramp-height setting and warnings.
 - Pause and Resume of a live measurement and its results.
 - PWA installation or offline caching for use without a network connection after an initial successful load.
+- A viewport-filling measurement surface without document scrolling.
 
 ### Out of scope
 
@@ -64,6 +65,7 @@ The app shall not imply that the calculation replaces safety checks or manufactu
 - FR-5: The application shall update live measurements and recommendations while measuring is active.
 - FR-6: The application shall detect unavailable, invalid, or insufficiently stable sensing data and shall not present it as a valid lift plan.
 - FR-7: The measurement flow shall instruct the user to keep the phone stable on a fixed, flat surface in the supported landscape direction, with its physical top at screen right aligned to the vehicle front.
+- FR-7a: The application shall request browser fullscreen from the user-initiated motion-enable action when the browser supports the Fullscreen API. The app shall remain usable when fullscreen is unavailable or declined.
 
 ### 5.2 Results and Pause
 
@@ -113,6 +115,7 @@ Exact simultaneous correction of pitch and roll is not generally possible by rai
 - QR-4: The application shall be accessible over HTTPS without an account and shall work without a network connection after a successful online load that caches its core application resources.
 - QR-5: The cached application shall include all required vehicle presets, calculation logic, instructional graphics, and user-interface assets. It shall not require a network request for a subsequent offline launch, measurement, configuration, or calculation.
 - QR-6: Sensor failure, invalid configuration, and excessive lift conditions shall be understandable without technical terminology.
+- QR-7: The measurement screen shall not permit document scrolling. Settings content may scroll within its own panel.
 
 ## 7. Acceptance Criteria
 

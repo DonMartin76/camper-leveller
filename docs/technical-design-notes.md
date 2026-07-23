@@ -33,6 +33,8 @@ The first product target is Safari on iPhone. Android is a supported product dir
 
 Adding the PWA to the Home Screen is optional for the MVP. The application must be usable directly in Safari. A native mobile app remains a later option if real-device testing identifies unacceptable Safari constraints in motion sensing, coordinate behavior, backgrounding, or landscape use.
 
+The measurement view should fill the viewport without document scrolling. The app may request the browser Fullscreen API from the same user gesture that enables motion sensing. Fullscreen is browser-dependent; particularly on iPhone Safari, adding the PWA to the Home Screen remains the reliable way to remove browser chrome.
+
 ## 3. Sensor and Coordinate Model
 
 The product requires browser-provided phone orientation data that can be transformed into vehicle-relative pitch and roll when the phone's physical top, at the screen's right edge in the supported landscape hold, points to vehicle front. iOS Safari requires the user to grant motion/orientation access from an explicit interaction; the user interface must explain this before requesting access and provide a usable unavailable-permission state.

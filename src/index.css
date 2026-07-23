@@ -16,7 +16,8 @@
   -webkit-font-smoothing: antialiased;
 }
 
+html, body, #root { height: 100%; overflow: hidden; }
 * { box-sizing: border-box; }
-body { margin: 0; min-width: 320px; }
+body { margin: 0; min-width: 320px; overscroll-behavior: none; }
 button, input, select { font: inherit; }
 button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #f0b863; outline-offset: 2px; }

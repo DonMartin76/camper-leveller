@@ -64,7 +64,12 @@ function App() {
   function toggleMeasurement() {
     if (isPaused) setPaused(null)
     else if (motion.status === 'active' && motion.measurement) setPaused(motion.measurement)
-    else void motion.requestAccess()
+    else {
+      if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+        void document.documentElement.requestFullscreen().catch(() => undefined)
+      }
+      void motion.requestAccess()
+    }
   }
 
   const controlText = isPaused ? 'Resume' : motion.status === 'active' ? 'Pause' : 'Enable motion'
@@ -73,10 +78,7 @@ function App() {
     <main className="app-shell">
       <div className="portrait-notice" role="status">Rotate your phone to landscape to measure.</div>
       <div className="landscape-app">
-        <header className="topbar">
-          <div><p className="eyebrow">Camper leveller</p><h1>Ramp guidance</h1></div>
-          <button className="icon-button" type="button" onClick={() => setSettingsOpen(true)} aria-label="Open settings" title="Settings"><Settings size={22} /></button>
-        </header>
+        <button className="icon-button settings-button" type="button" onClick={() => setSettingsOpen(true)} aria-label="Open settings" title="Settings"><Settings size={22} /></button>
         <section className="workspace" aria-label="Live leveling guidance">
           <aside className="measurement-panel">
             <div className="status-line">{motion.status === 'active' ? <Signal size={18} /> : <SignalZero size={18} />}<span>{isPaused ? 'Paused reading' : motion.label}</span></div>
