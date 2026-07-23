@@ -1,5 +1,5 @@
 import { Pause, Play, Settings, Signal, SignalZero, TriangleAlert, X } from 'lucide-react'
-import { useEffect, useReducer, useState } from 'react'
+import { useEffect, useReducer, useRef, useState } from 'react'
 import './App.css'
 import { defaultVehiclePreset, vehiclePresetLabel, vehiclePresets, type VehiclePreset } from './data/vehiclePresets'
 import { createLevelingPlan, estimateTrackWidthMm, type LevelingMode, type Measurement, type VehicleGeometry, type Wheel } from './lib/leveling'
@@ -54,16 +54,31 @@ function App() {
   const [state, dispatch] = useReducer(reducer, defaultState, loadState)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [paused, setPaused] = useState<Measurement | null>(null)
+  const [pausePending, setPausePending] = useState(false)
+  const latestMeasurement = useRef<Measurement | null>(null)
+  const pauseTimer = useRef<number | null>(null)
   const motion = useMotionSensor()
   const measurement = paused ?? motion.measurement
   const plan = measurement ? createLevelingPlan(measurement, state.vehicle, state.mode, state.maximumLiftCm) : null
   const isPaused = paused !== null
 
   useEffect(() => { window.localStorage.setItem('camper-leveller.settings', JSON.stringify(state)) }, [state])
+  useEffect(() => { latestMeasurement.current = motion.measurement }, [motion.measurement])
+  useEffect(() => () => {
+    if (pauseTimer.current !== null) window.clearTimeout(pauseTimer.current)
+  }, [])
 
   function toggleMeasurement() {
     if (isPaused) setPaused(null)
-    else if (motion.status === 'active' && motion.measurement) setPaused(motion.measurement)
+    else if (pausePending) return
+    else if (motion.status === 'active' && motion.measurement) {
+      setPausePending(true)
+      pauseTimer.current = window.setTimeout(() => {
+        setPaused(latestMeasurement.current)
+        setPausePending(false)
+        pauseTimer.current = null
+      }, 1000)
+    }
     else {
       if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
         void document.documentElement.requestFullscreen().catch(() => undefined)
@@ -72,7 +87,7 @@ function App() {
     }
   }
 
-  const controlText = isPaused ? 'Resume' : motion.status === 'active' ? 'Pause' : 'Enable motion'
+  const controlText = isPaused ? 'Resume' : pausePending ? 'Pausing...' : motion.status === 'active' ? 'Pause' : 'Enable motion'
 
   return (
     <main className="app-shell">
@@ -91,10 +106,10 @@ function App() {
             <div className="vehicle-layout">
               {wheels.map((wheel) => <WheelValue key={wheel} wheel={wheel} lift={plan?.liftsCm[wheel] ?? null} active={plan?.selectedWheels.includes(wheel) ?? false} />)}
               <div className="camper-symbol" aria-hidden="true"><div className="front-arrow">Front</div><div className="windscreen" /><div className="cab" /><div className="living-area" /><div className="phone-guide">TOP</div></div>
-              <button className={`measurement-button ${isPaused ? 'paused' : ''}`} type="button" onClick={toggleMeasurement}>{isPaused ? <Play size={25} fill="currentColor" /> : motion.status === 'active' ? <Pause size={25} fill="currentColor" /> : <Signal size={25} />}<span>{controlText}</span></button>
+              <button className={`measurement-button ${isPaused ? 'paused' : ''} ${pausePending ? 'delaying' : ''}`} type="button" onClick={toggleMeasurement} disabled={pausePending}>{isPaused ? <Play size={25} fill="currentColor" /> : motion.status === 'active' ? <Pause size={25} fill="currentColor" /> : <Signal size={25} />}<span>{controlText}</span></button>
             </div>
             <p className="vehicle-summary">{state.presetId === 'custom' ? 'Custom' : vehiclePresetLabel(vehiclePresets.find((preset) => preset.id === state.presetId)!)} | {state.vehicle.wheelbaseMm} mm wheelbase | {state.vehicle.widthMm} mm body width | {Math.round(estimateTrackWidthMm(state.vehicle.widthMm))} mm estimated track | {state.maximumLiftCm} cm ramp limit</p>
-            {plan?.exceedsMaximum && <div className="warning" role="alert"><TriangleAlert size={20} /><span>One or more lifts exceed your {state.maximumLiftCm} cm ramp limit.</span></div>}
+            <div className="warning-slot">{plan?.exceedsMaximum && <div className="warning" role="alert"><TriangleAlert size={20} /><span>One or more lifts exceed your {state.maximumLiftCm} cm ramp limit.</span></div>}</div>
           </section>
         </section>
         {motion.status === 'denied' && <p className="sensor-message" role="alert">Motion access is off. Allow Motion & Orientation Access in Safari, then try again.</p>}
