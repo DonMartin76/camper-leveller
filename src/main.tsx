@@ -50,7 +50,7 @@ window.addEventListener('orientationchange', settleViewportHeight)
 window.visualViewport?.addEventListener('resize', settleViewportHeight)
 matchMedia('(orientation: landscape)').addEventListener('change', settleViewportHeight)
 
-if (location.hash.includes('debug')) {
+if (location.hash.includes('debug') || localStorage.getItem('camper-leveller.debug') === '1') {
   debugEl = document.createElement('div')
   debugEl.style.cssText =
     'position:fixed;top:0;left:0;z-index:9999;background:rgba(0,0,0,.78);color:#3f6;' +

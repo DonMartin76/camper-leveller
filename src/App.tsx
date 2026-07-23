@@ -23,6 +23,15 @@ const presetsByManufacturer = vehiclePresets.reduce<Record<string, VehiclePreset
   return groups
 }, {})
 
+function toggleDebug() {
+  if (window.localStorage.getItem('camper-leveller.debug') === '1') {
+    window.localStorage.removeItem('camper-leveller.debug')
+  } else {
+    window.localStorage.setItem('camper-leveller.debug', '1')
+  }
+  window.location.reload()
+}
+
 function loadState(): AppState {
   try {
     const stored = window.localStorage.getItem('camper-leveller.settings')
@@ -96,7 +105,7 @@ function App() {
           <p className="portrait-app-name">Camper Leveller</p>
           <p className="portrait-message">Rotate your phone to landscape to measure.</p>
           <p className="portrait-copyright">(c) 2026 Martin Danielsson</p>
-          <p className="portrait-build">build {__BUILD_SHA__} &middot; {__BUILD_DATE__}</p>
+          <button className="portrait-build" type="button" onClick={toggleDebug} title="Tap to toggle diagnostics">build {__BUILD_SHA__} &middot; {__BUILD_DATE__}</button>
         </div>
       </div>
       <div className="landscape-app">
