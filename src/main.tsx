@@ -25,8 +25,9 @@ function renderDebug() {
   const vv = window.visualViewport
   const orientation = matchMedia('(orientation: landscape)').matches ? 'landscape' : 'portrait'
   const appHeight = getComputedStyle(document.documentElement).getPropertyValue('--app-height').trim()
+  const angle = screen.orientation?.angle ?? '?'
   debugEl.textContent =
-    `${orientation} | win ${window.innerWidth}x${window.innerHeight}` +
+    `${orientation}@${angle} | win ${window.innerWidth}x${window.innerHeight}` +
     ` | vv ${vv ? `${Math.round(vv.width)}x${Math.round(vv.height)}` : 'n/a'}` +
     ` | appH ${appHeight} | scrollY ${Math.round(window.scrollY)} | ev ${eventCount}`
 }
