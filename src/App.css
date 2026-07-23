@@ -1,4 +1,4 @@
-.app-shell { height: 100dvh; overflow: hidden; padding: 4px clamp(16px, 3vw, 40px) calc(4px + env(safe-area-inset-bottom)); }
+.app-shell { height: var(--app-height, 100svh); overflow: hidden; padding: 4px clamp(16px, 3vw, 40px) calc(4px + env(safe-area-inset-bottom)); }
 .workspace, .settings-header, .status-line, .warning, .mode-control, .angles { align-items: center; display: flex; }
 .eyebrow { color: var(--copper); font-size: .72rem; font-weight: 750; letter-spacing: .1em; margin: 0 0 3px; text-transform: uppercase; }
 h2 { color: var(--ink); font-family: var(--heading); font-size: 1.35rem; font-weight: 700; letter-spacing: 0; margin: 0; }
