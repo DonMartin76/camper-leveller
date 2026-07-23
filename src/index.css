@@ -18,6 +18,6 @@
 
 html, body, #root { height: var(--app-height, 100svh); overflow: hidden; }
 * { box-sizing: border-box; }
-body { margin: 0; min-width: 320px; overscroll-behavior: none; }
+body { position: fixed; inset: 0; margin: 0; min-width: 320px; overscroll-behavior: none; width: 100%; }
 button, input, select { font: inherit; }
 button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #f0b863; outline-offset: 2px; }

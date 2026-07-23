@@ -28,7 +28,7 @@ function renderDebug() {
   debugEl.textContent =
     `${orientation} | win ${window.innerWidth}x${window.innerHeight}` +
     ` | vv ${vv ? `${Math.round(vv.width)}x${Math.round(vv.height)}` : 'n/a'}` +
-    ` | appH ${appHeight} | ev ${eventCount}`
+    ` | appH ${appHeight} | scrollY ${Math.round(window.scrollY)} | ev ${eventCount}`
 }
 
 let settleRaf = 0
@@ -38,6 +38,7 @@ function settleViewportHeight() {
   const start = performance.now()
   const tick = () => {
     applyViewportHeight()
+    window.scrollTo(0, 0)
     renderDebug()
     if (performance.now() - start < 1500) settleRaf = requestAnimationFrame(tick)
   }
